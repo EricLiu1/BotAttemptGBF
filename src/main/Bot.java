@@ -160,7 +160,7 @@ public class Bot implements Runnable {
 
         //main loop
         int i = 0;
-        boolean confirm = true; 
+//        boolean confirm = true; 
         while (iterations > 0) {
         	// testing purposes
 //        	if(i==0)
@@ -171,7 +171,7 @@ public class Bot implements Runnable {
           //take screenshot
           currentSS = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
 
-          System.out.println("########################");
+          System.out.println("iterations: "+iterations  +  "\nStage: " + stage);
 //          System.out.println("FOUND STAGE:" + newStage);
 //          handle(newStage);
           if(stage == Stage.HOME)
@@ -182,8 +182,8 @@ public class Bot implements Runnable {
           else if(stage == Stage.QUEST)
           {
             actionDelay = delayHL;
-            questAcceptance(confirm);
-            confirm = true;
+            questAcceptance();
+//            confirm = true;
           }
           else if(stage == Stage.CONFIRM)
           {
@@ -212,7 +212,7 @@ public class Bot implements Runnable {
         	 actionDelay = delayNormal;
         	 done(); 
         	 iterations --; 
-        	 confirm = false; 
+//        	 confirm = false; 
           }
 
           //actionDelay+random delay in ms
@@ -335,18 +335,11 @@ public class Bot implements Runnable {
       stage = Stage.QUEST;
   }
   
-  private void questAcceptance(boolean confirm) throws AWTException{
-	  Loc showdownButton = new Loc(400,850);
+  private void questAcceptance() throws AWTException{
+	  Loc showdownButton = new Loc(400,840);
 	  click(showdownButton);
-	  if(confirm == true)
-	  {
-		  stage = Stage.CONFIRM;
-	  }
-	  else
-	  {
-		  friendRequest();
-		  stage = Stage.QUEST;
-	  }
+	  stage = Stage.CONFIRM;
+
 	  
   }
   private void questConfirm() throws AWTException{
