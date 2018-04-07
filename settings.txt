@@ -3,7 +3,7 @@
 
 ####### RUNTIME
 ### Bot runtime in minutes
-runtime=60
+### runtime=60
 
 ####### INGAME WINDOW SIZE
 ### Set this to 0 to use LARGE settings, set it to 1 to use MEDIUM settings
