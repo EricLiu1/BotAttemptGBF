@@ -1,1 +1,0 @@
-java -jar Pokerbot.jar settings.txt

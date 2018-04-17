@@ -33,18 +33,34 @@ public class Bot implements Runnable {
   private int delayHL;
   private int sound;
   private boolean medium;
-
+  private Mode mode;
 
   public Bot(Properties properties) {
 
     System.out.println("############READING SETTINGS");
     //runtime
-    iterations = checkProperty(properties, "iterations", 60);
+    iterations = checkProperty(properties, "iterations", 4);
 //    if (runtime < 0) {
 //      runtime = 60;
 //    }
+    iterations = 18;
     System.out.println("iterations=" + iterations);
-
+    
+    int m = checkProperty(properties,"mode",1);
+    m = 3;
+    if(m == 1)
+    {
+        mode = Mode.HARD;
+    }
+    if(m == 2)
+    {
+    	mode = Mode.EVENT;
+    }
+    if(m == 3)
+    {
+    	mode = Mode.RAIDS;
+    }
+    
     int med = checkProperty(properties, "medium", 0);
     medium = !(med == 0);
 
@@ -174,50 +190,37 @@ public class Bot implements Runnable {
           System.out.println("iterations: "+iterations  +  "\nStage: " + stage);
 //          System.out.println("FOUND STAGE:" + newStage);
 //          handle(newStage);
-          if(stage == Stage.HOME)
+          switch(stage)
           {
-            actionDelay = delayNormal;
-            questChoosing();
-          }
-          else if(stage == Stage.QUEST)
-          {
-            actionDelay = delayHL;
-            questAcceptance();
-//            confirm = true;
-          }
-          else if(stage == Stage.CONFIRM)
-          {
-            actionDelay = delayHL;
-            questConfirm();
-          }
-          else if(stage == Stage.SELECTION)
-          {
-        	 actionDelay = delayNormal;
-        	 summonSelection();
-          }
-          else if(stage == Stage.AID)
-          {
-        	 actionDelay = delayNormal;
-
-             Thread.sleep(actionDelay + 7500);
-        	 requestAid(false);
-          }
-          else if(stage == Stage.BATTLE)
-          {
-        	 actionDelay = delayNormal;
-        	 auto();
-          }
-          else if(stage == Stage.DONE)
-          {
-        	 actionDelay = delayNormal;
-        	 done(); 
-        	 iterations --; 
-//        	 confirm = false; 
+          case HOME:  actionDelay = delayNormal;
+          			  questChoosing();
+          			  delay();
+          case QUEST: actionDelay = delayHL;
+          			  questAcceptance();	  
+          			  delay();
+          case CONFIRM:questConfirm();		
+          			   delay();
+          case SELECTION:actionDelay = delayNormal;
+          				 summonSelection();
+          				 delay();
+          case AID: actionDelay = delayNormal;
+			        Thread.sleep(actionDelay + 7500);
+			     	requestAid(false);
+			     	delay();
+          case BATTLE: auto();
+          			   delay();
+          case DONE: actionDelay = delayNormal;
+			     	 done(); 
+			     	 iterations --; 
+			     	 delay();
+			     	 break;
+          case RAIDCODE: raidFinder();
+          case ENTERCODE: enterCodeViraMate();
+          				  delay();
           }
 
           //actionDelay+random delay in ms
-          delay = rand.nextInt(300);
-          Thread.sleep(actionDelay + delay);
+
 //          current = System.currentTimeMillis();
         }
 
@@ -231,7 +234,10 @@ public class Bot implements Runnable {
   }
 
 
-
+private void delay() throws InterruptedException{
+    int delay = rand.nextInt(300);
+    Thread.sleep(actionDelay + delay);
+}
 
 
   private void init() throws AWTException, IOException, InterruptedException {
@@ -312,8 +318,20 @@ public class Bot implements Runnable {
 //      leftButton = new Loc(start, new Loc(240, 726));
 //      rightButton = new Loc(start, new Loc(400, 726));
 //    }
-    stage = Stage.HOME; 
+    startingStage();
   }
+  
+  private void startingStage(){
+	    if(mode == Mode.HARD || mode == Mode.EVENT)
+	    {
+	    	stage = Stage.HOME; 
+	    }
+	    if(mode == Mode.RAIDS)
+	    {
+	    	stage = Stage.RAIDCODE;
+	    }
+  }
+  
   //calls countMisses for each possible position inside bigImage
   //return null if not found. returns upperleft pixel location if found
   private Loc findMatches(BufferedImage bigImage, BufferedImage target, int maxMiss, int maxDiff) {
@@ -328,10 +346,21 @@ public class Bot implements Runnable {
     }
     return null;
   }
+  
+  /* Exclusize for hard level question*/
   // hits the quest button and moves to the next stage
   private void questChoosing() throws AWTException{
-      Loc questButton = new Loc(425, 550);
-	  click(questButton);
+	  if(mode == Mode.HARD)
+	  {
+	     Loc questButton = new Loc(425, 550);
+		 click(questButton);
+	  }
+	  else if (mode == Mode.EVENT)
+	  {
+		 Loc eventBannerButton = new Loc(400,840);
+		 click(eventBannerButton);
+	  }
+
       stage = Stage.QUEST;
   }
   
@@ -353,13 +382,11 @@ public class Bot implements Runnable {
   private void summonSelection() throws AWTException, InterruptedException{
 	  Loc summonSelectButton = new Loc(500,370);
 	  click(summonSelectButton);
-      int delay = rand.nextInt(300);
-      Thread.sleep(actionDelay + delay);
+      delay();
 	  Loc clickingSummon = new Loc(500,470);
 	  click(clickingSummon);
-      delay = rand.nextInt(300);
-      Thread.sleep(actionDelay + delay);
-	  Loc clickingConfirm = new Loc(450,725);
+      delay();
+	  Loc clickingConfirm = new Loc(450,730);
 	  click(clickingConfirm);
 
 	  stage = Stage.AID;
@@ -375,8 +402,7 @@ public class Bot implements Runnable {
 	  {
 		  showdownButton = new Loc(450,650);
 		  click(showdownButton);
-	      int delay = rand.nextInt(300);
-	      Thread.sleep(actionDelay + delay);
+	      delay();
 	      // haven't tested the done feature
 		  Loc confirmButton = new Loc(400,650);
 		  click(confirmButton);
@@ -394,31 +420,58 @@ public class Bot implements Runnable {
   private void auto() throws AWTException, InterruptedException{
 	  Loc attackButton = new Loc(475,475);
 	  click(attackButton);
-      int delay = rand.nextInt(300);
-      Thread.sleep(actionDelay + delay);
+      delay();
 	  Loc autoButton = new Loc(100,500);
 	  click(autoButton);
-	  Thread.sleep(actionDelay + 100000 );
+	  if(mode == Mode.HARD)
+	  {
+		  Thread.sleep(actionDelay + 100000 );
+	  }
+	  else if ( mode == Mode.RAIDS)
+	  {
+		  Thread.sleep(actionDelay + 200000 ); 
+	  }
 	  stage = Stage.DONE;
   }
   //quest cancel 2x as friend request
-  private void friendRequest() throws AWTException{
-	  Loc cancelButton = new Loc(150,600);
-	  click(cancelButton);
-  }
+//  private void friendRequest() throws AWTException{
+//	  Loc cancelButton = new Loc(150,600);
+//	  click(cancelButton);
+//  }
   // add friend request cancel feature later
   private void done() throws AWTException, InterruptedException{
 
 	  okButton();
-      int delay = rand.nextInt(300);
-      Thread.sleep(actionDelay + delay);
+      delay();
 	  Loc returnButton = new Loc(300,530);
 	  click(returnButton);
-      delay = rand.nextInt(300);
-      Thread.sleep(actionDelay + delay);
+      delay();
 //	  friendRequest();
-	  stage = Stage.QUEST;
+      startingStage();
+	  
   }
+  
+  
+  
+  
+  /* Raiding */
+  private void raidFinder() throws AWTException, InterruptedException{
+	  Loc raidCodeButton = new Loc(1000,150);
+	  clickExact(raidCodeButton);
+	  stage = Stage.ENTERCODE;
+  }
+  
+  private void enterCodeViraMate() throws AWTException, InterruptedException{
+	  Loc viraMateButton = new Loc(675,55);
+	  clickExact(viraMateButton);
+	  delay();
+	  Loc joinButton = new Loc(550,100);
+	  clickExact(joinButton);
+	  stage = Stage.SELECTION;
+  }
+  
+  
+  
   //search for target image inside bigImg by comparing pixel rbg value
   //maxDiff is max difference in rgb value between 2 pixels to consider it a miss
   //bound is max number of misses
@@ -451,18 +504,46 @@ public class Bot implements Runnable {
   public void click(Loc loc) throws AWTException {
     click(loc.getX(), loc.getY());
   }
-
+  public void clickExact(Loc loc) throws AWTException {
+    clickExact(loc.getX(), loc.getY());
+  }
   //move mouse instantly and click
   public void clickFast(Loc loc) throws AWTException {
     Robot bot = new Robot();
     bot.mouseMove(loc.getX(), loc.getY());
   }
+ // exactly like the click function except the randomness is taken out
+  public void clickExact(int x, int y) throws AWTException
+  {
+	    PointerInfo a = MouseInfo.getPointerInfo();
+	    Point b = a.getLocation();
+	    int mx = (int) b.getX();
+	    int my = (int) b.getY();
 
+	    double t = clickDelay + rand.nextInt(250);
+	    double n = 50;
+	    double dx = (x - mx) / n;
+	    double dy = (y - my) / n;
+	    double dt = t / n;
+
+	    try {
+	      Robot bot = new Robot();
+	      for (int i = 0; i < n; i++) {
+	        Thread.sleep((int) dt);
+	        bot.mouseMove((int) (mx + dx * i), (int) (my + dy * i));
+	      }
+	      bot.mousePress(InputEvent.BUTTON1_MASK);
+	      bot.mouseRelease(InputEvent.BUTTON1_MASK);
+	    } catch (InterruptedException e) {
+	      System.out.println(e);
+	    }
+
+  }
   //move mouse to location x,y and click
   //location and speed slightly randomized
   public void click(int x, int y) throws AWTException {
     x += rand.nextInt(20) - 10;
-    y += rand.nextInt(20) - 10;
+    y += rand.nextInt(10) - 5;
 
     PointerInfo a = MouseInfo.getPointerInfo();
     Point b = a.getLocation();
