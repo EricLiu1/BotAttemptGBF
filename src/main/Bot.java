@@ -30,6 +30,7 @@ public class Bot implements Runnable {
   private int HLBound;
   private int clickDelay;
   private int delayNormal;
+  private int delayLag;
   private int delayHL;
   private int sound;
   private boolean medium;
@@ -47,7 +48,7 @@ public class Bot implements Runnable {
     System.out.println("iterations=" + iterations);
     
     int m = checkProperty(properties,"mode",1);
-    m = 3;
+    m = 5;
     if(m == 1)
     {
         mode = Mode.HARD;
@@ -60,10 +61,18 @@ public class Bot implements Runnable {
     {
     	mode = Mode.RAIDS;
     }
+    if(m == 4)
+    {
+    	mode = Mode.REPEAT;
+    }
+    if (m==5)
+    {
+    	mode = Mode.REPEATEVENT;
+    }
     
     int med = checkProperty(properties, "medium", 0);
     medium = !(med == 0);
-
+    delayLag=2;
     //delayNormal
     delayNormal = checkProperty(properties, "delayNormal", 3000);
     if (delayNormal < 0) {
@@ -72,6 +81,7 @@ public class Bot implements Runnable {
     if (delayNormal < 3000) {
       System.out.println("WARNING: delayNormal below 3000ms may cause the bot to desync");
     }
+    delayNormal *= delayLag;
     System.out.println("delayNormal=" + delayNormal);
 
     //delayHL
@@ -82,6 +92,7 @@ public class Bot implements Runnable {
     if (delayHL < 2500) {
       System.out.println("WARNING: delayHL below 2500ms may cause the bot to desync");
     }
+    delayHL *=delayLag;
     System.out.println("delayHL=" + delayHL);
 
     //clickDelay
@@ -187,36 +198,47 @@ public class Bot implements Runnable {
           //take screenshot
           currentSS = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
 
-          System.out.println("iterations: "+iterations  +  "\nStage: " + stage);
 //          System.out.println("FOUND STAGE:" + newStage);
 //          handle(newStage);
           switch(stage)
           {
-          case HOME:  actionDelay = delayNormal;
-          			  questChoosing();
-          			  delay();
-          case QUEST: actionDelay = delayHL;
-          			  questAcceptance();	  
-          			  delay();
-          case CONFIRM:questConfirm();		
-          			   delay();
-          case SELECTION:actionDelay = delayNormal;
-          				 summonSelection();
-          				 delay();
-          case AID: actionDelay = delayNormal;
-			        Thread.sleep(actionDelay + 7500);
-			     	requestAid(false);
-			     	delay();
-          case BATTLE: auto();
-          			   delay();
-          case DONE: actionDelay = delayNormal;
-			     	 done(); 
-			     	 iterations --; 
-			     	 delay();
-			     	 break;
-          case RAIDCODE: raidFinder();
+          case HOME:      actionDelay = delayNormal;
+          			      questChoosing();
+          			      delay();
+          			      break;
+          case QUEST:     actionDelay = delayHL;
+          			  	  questAcceptance();	  
+          			  	  delay();
+          			  	  break;
+          case CONFIRM:	  questConfirm();		
+          			   	  delay();
+          			   	  break;
+          case SELECTION: actionDelay = delayNormal;
+          				  summonSelection();
+          				  delay();
+          				  break;
+	      case AID:       actionDelay = delayNormal;
+				          Thread.sleep(actionDelay + 7500);
+				     	  requestAid(false);
+				     	  delay();
+				     	  break;
+          case BATTLE:    delay();
+        	  			  auto();
+          			      delay();
+          			      break;
+          case DONE:      actionDelay = delayNormal;
+			     	 	  done(); 
+			     	 	  iterations --; 
+			     	 	  delay();
+			     	 	  break;
+          case RAIDCODE:  raidFinder();
+          				  break;
           case ENTERCODE: enterCodeViraMate();
           				  delay();
+          				  break;
+          case REPEAT:    repeatQuest();
+          			   	  delay();
+          			   	  break;
           }
 
           //actionDelay+random delay in ms
@@ -235,6 +257,8 @@ public class Bot implements Runnable {
 
 
 private void delay() throws InterruptedException{
+    System.out.println("iterations: "+iterations  +  "\nStage: " + stage);
+
     int delay = rand.nextInt(300);
     Thread.sleep(actionDelay + delay);
 }
@@ -320,15 +344,27 @@ private void delay() throws InterruptedException{
 //    }
     startingStage();
   }
-  
+  boolean flag = true;
   private void startingStage(){
-	    if(mode == Mode.HARD || mode == Mode.EVENT)
-	    {
-	    	stage = Stage.HOME; 
+	    if(mode == Mode.HARD )
+	    {   if(flag)
+		    {
+	    		stage = Stage.HOME; 
+	    		flag = false;
+		    }
+	    	else
+	    	{
+	    		stage = Stage.QUEST;
+	    	}
+	    	
 	    }
 	    if(mode == Mode.RAIDS)
 	    {
 	    	stage = Stage.RAIDCODE;
+	    }
+	    if(mode == Mode.REPEAT || mode == Mode.REPEATEVENT)
+	    {
+	    	stage = Stage.REPEAT;
 	    }
   }
   
@@ -388,8 +424,15 @@ private void delay() throws InterruptedException{
       delay();
 	  Loc clickingConfirm = new Loc(450,730);
 	  click(clickingConfirm);
-
-	  stage = Stage.AID;
+	  if(mode == Mode.REPEATEVENT)
+	  {
+		  stage = Stage.BATTLE;
+	  }
+	  else
+	  {
+		  stage = Stage.AID;
+	  }
+	  
 	  
   }
   private void okButton() throws AWTException {
@@ -398,11 +441,15 @@ private void delay() throws InterruptedException{
   }
   private void requestAid(boolean aid) throws AWTException, InterruptedException{
 	  Loc showdownButton = null;
-	  if(aid)
+	  
+	  if(mode == Mode.REPEAT )
+	  {
+		 okButton();
+	  }
+	  else if(aid)
 	  {
 		  showdownButton = new Loc(450,650);
 		  click(showdownButton);
-	      delay();
 	      // haven't tested the done feature
 		  Loc confirmButton = new Loc(400,650);
 		  click(confirmButton);
@@ -418,6 +465,7 @@ private void delay() throws InterruptedException{
   }
   
   private void auto() throws AWTException, InterruptedException{
+	  delay();
 	  Loc attackButton = new Loc(475,475);
 	  click(attackButton);
       delay();
@@ -430,6 +478,10 @@ private void delay() throws InterruptedException{
 	  else if ( mode == Mode.RAIDS)
 	  {
 		  Thread.sleep(actionDelay + 200000 ); 
+	  }
+	  else{
+//		  Thread.sleep(actionDelay + 50000 );
+		  Thread.sleep(actionDelay + 250000);
 	  }
 	  stage = Stage.DONE;
   }
@@ -470,8 +522,14 @@ private void delay() throws InterruptedException{
 	  stage = Stage.SELECTION;
   }
   
-  
-  
+  private void repeatQuest() throws AWTException, InterruptedException
+  {
+	  Loc repeatQuestViramate = new Loc(5,195);
+	  clickExact(repeatQuestViramate);
+	  clickExact(repeatQuestViramate);
+
+	  stage = Stage.SELECTION;
+  }
   //search for target image inside bigImg by comparing pixel rbg value
   //maxDiff is max difference in rgb value between 2 pixels to consider it a miss
   //bound is max number of misses
