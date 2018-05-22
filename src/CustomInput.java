@@ -28,7 +28,7 @@ public class CustomInput {
 			}
 			catch(Exception e){
 				try {
-					delay(Integer.parseInt(coord[1])* 1000 );
+					delay(Integer.parseInt(coord[1]) );
 				} catch (NumberFormatException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

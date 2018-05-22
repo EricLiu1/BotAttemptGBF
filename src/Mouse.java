@@ -52,6 +52,7 @@ public class Mouse {
 
 		    	   frame.setVisible(true);
 		    	   Listener.i = 0;
+		    	   Listener.time = System.currentTimeMillis();
 		       }
 	    	}
 	    	
@@ -60,6 +61,7 @@ public class Mouse {
 	    private static class Listener implements AWTEventListener {
 	    	volatile static PrintWriter writer;
 	    	volatile static int i = 0;
+	    	volatile static long time = System.currentTimeMillis();
 	    	Listener(){
 	    		try {
 					writer = new PrintWriter("clicks.txt", "UTF-8");
@@ -74,6 +76,7 @@ public class Mouse {
 	        public void eventDispatched(AWTEvent event) {
 	            System.out.print(MouseInfo.getPointerInfo().getLocation() + " | ");
 	            System.out.println(event);
+	            
 	            if(writer == null)
 	            {
 	            	System.out.println("null");
@@ -86,6 +89,8 @@ public class Mouse {
 	            	Point mouseLoc = MouseInfo.getPointerInfo().getLocation();
 	            	writer.println(mouseLoc.x + " "+ mouseLoc.y);
 	            	i=-1;
+	            	long updatedTime = System.currentTimeMillis();
+	            	writer.println("Delay in miliseconds: " + (updatedTime - time));
 	            	
 	            }
 	            System.out.println(i);
