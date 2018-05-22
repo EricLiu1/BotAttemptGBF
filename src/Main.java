@@ -1,4 +1,5 @@
 //import java.awt.Label;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,6 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Label;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class Main extends Application implements EventHandler<ActionEvent> {
@@ -30,10 +32,13 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     Button repeat;
     Button repeatEvent;
     Button exit;
+    Button mimic;
+    Button customInput;
     TextField iterations;
     TextField delayTransitions;
     TextField delayClicks;
     Thread start;
+
     static TextArea output = new TextArea(); 
     public static void main(String[] args) {
         launch(args);
@@ -48,11 +53,15 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         repeat = new Button("Repeat");
         repeatEvent = new Button("Repeat Event");
         exit = new Button("Exit");
+        mimic = new Button("Mimic");
+        customInput = new Button("Custom Input");
         hardDailies.setPrefSize(100, 20);
         events.setPrefSize(100, 20);
         raid.setPrefSize(100, 20);
         repeat.setPrefSize(100, 20);
         repeatEvent.setPrefSize(100, 20);
+        mimic.setPrefSize(100,20);
+        customInput.setPrefSize(100, 20);
         
         // Displays the boxes that take in user values
         BorderPane iterationHBox = new BorderPane();
@@ -90,12 +99,26 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         repeat.setOnAction(this);
         repeatEvent.setOnAction(this);
         exit.setOnAction(this);
+        mimic.setOnAction(this);
+        customInput.setOnAction(  new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(final ActionEvent e) {
+            	FileChooser fileChooser = new FileChooser();
+            	File file = fileChooser.showOpenDialog(primaryStage);
+                if (file != null) {
+						openFile(file);
+					
+                }
+            }
+        });
+        	
+        
         
         HBox raids = new HBox();
         raids.setPadding(new Insets(15, 12, 15, 12));
         raids.setSpacing(10);
         raids.setStyle("-fx-background-color: #336699;");
-        raids.getChildren().addAll(hardDailies,events,raid,repeat,repeatEvent,exit);
+        raids.getChildren().addAll(hardDailies,events,raid,repeat,repeatEvent,mimic,customInput, exit );
         
         BorderPane fields = new BorderPane();
         fields.setTop(iterationHBox);
@@ -126,6 +149,17 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         	System.exit(0);
         	return;
         }
+        if(event.getSource() == mimic){
+        	Mouse mouse = new Mouse();
+        	try {
+				mouse.mimic();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	return;
+        }
+    
 		try {
 			writer = new PrintWriter("bot_input.txt", "UTF-8");
 	        if (event.getSource() == hardDailies) 
@@ -189,6 +223,15 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     {
     	  output.appendText(msg + "\n");
     }
+    private void openFile(File file) {
+        CustomInput CI = new CustomInput();  
+    	try {
+			CI.execute(file.getName());
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     
+    }
 
 }

@@ -1,2 +1,0 @@
-mode=3
-iterations=30

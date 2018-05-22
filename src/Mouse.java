@@ -12,7 +12,7 @@ import javax.swing.JFrame;
 public class Mouse {
 
 		
-	    public static void main(String[] args) throws IOException {
+	    public void mimic() throws IOException {
 	        JFrame frame = new JFrame();
 	        Listener temp = new Listener();
 
