@@ -87,15 +87,14 @@ public class Mouse {
 	            if(i == 2)
 	            {
 	            	Point mouseLoc = MouseInfo.getPointerInfo().getLocation();
+	            	long updatedTime = System.currentTimeMillis();
+	            	writer.println("DelayInMiliseconds: " + (updatedTime - time));
 	            	writer.println(mouseLoc.x + " "+ mouseLoc.y);
 	            	i=-1;
-	            	long updatedTime = System.currentTimeMillis();
-	            	writer.println("Delay in miliseconds: " + (updatedTime - time));
+	            	
 	            	
 	            }
-	            System.out.println(i);
 	            
-//	            System.out.println(Mouse.flag);
 
 	        }
 	        

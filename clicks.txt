@@ -1,10 +1,8 @@
-640 682
-821
-657 406
-1556
-700 775
-1208
-662 729
-1768
-699 784
-1290
+710 558
+Delayinmiliseconds: 1241
+662 679
+Delayinmiliseconds: 3316
+781 636
+Delayinmiliseconds: 1523
+939 687
+Delayinmiliseconds: 1427

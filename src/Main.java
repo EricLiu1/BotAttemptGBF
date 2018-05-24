@@ -225,7 +225,21 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     private void openFile(File file) {
         CustomInput CI = new CustomInput();  
     	try {
-			CI.execute(file.getName());
+            int numberOfIterations = 0;
+            try{
+            	numberOfIterations =Integer.parseInt(iterations.getText());
+            }catch(NumberFormatException e)
+            {
+            	numberOfIterations = 1;
+            }
+            		
+            while(numberOfIterations >0)
+            {
+            	write(String.valueOf(numberOfIterations));
+            	CI.execute(file.getName());
+            	numberOfIterations--;
+            }
+			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -206,7 +206,7 @@ public class Bot implements Runnable {
 				     	  break;
           case BATTLE:    
 //        	  			  delay();
-        	  			  auto(true);
+        	  			  auto(false);
           			      delay();
           			      break;
           case DONE:      actionDelay = delayNormal;
@@ -436,20 +436,20 @@ private void delay(int x) throws InterruptedException{
 	}
 	
   }
-//  private Loc[] smORC()
-//  {	  
-//	  Loc clicks[] = new Loc[8];
-//	  clicks[0]= new Loc(3,2);
-//	  clicks[1]= new Loc(2,1);
-//	  clicks[2]= new Loc(1,1);
-//	  clicks[3]= new Loc(1,0);
-//	  clicks[4]= new Loc(0,0);
-//	  clicks[5]= new Loc(0,1);
-//	  clicks[6]= new Loc(0,2);
-//	  clicks[7]= new Loc(0,3);
-//	  return clicks;
-//	  
-//  }
+  private Loc[] smORC()
+  {	  
+	  Loc clicks[] = new Loc[8];
+	  clicks[0]= new Loc(3,2);
+	  clicks[1]= new Loc(2,1);
+	  clicks[2]= new Loc(1,1);
+	  clicks[3]= new Loc(1,0);
+	  clicks[4]= new Loc(0,0);
+	  clicks[5]= new Loc(0,1);
+	  clicks[6]= new Loc(0,2);
+	  clicks[7]= new Loc(0,3);
+	  return clicks;
+	  
+  }
 //  // will get from user or something
 //  private Loc[] sequencing(){
 //	  Loc clicks[] = new Loc[13];
@@ -474,32 +474,32 @@ private void delay(int x) throws InterruptedException{
 //  }
 //  
   // will get from user or something
-  private Loc[] guildWarsLight(){
-	  Loc clicks[] = new Loc[13];
-	  clicks[0]= new Loc(0,0);
-	  clicks[1]= new Loc(0,1);
-	  clicks[2]= new Loc(3,0);
-	  clicks[3]= new Loc(3,2);
-	  clicks[4]= new Loc(0,2);
-	  clicks[5]= new Loc(0,3);
-	  clicks[6]= new Loc(1,2);
-	  clicks[7]= new Loc(2,0);
-	  clicks[8]= new Loc(2,2);
-	  clicks[9]= new Loc(2,1);
-	  clicks[10]= new Loc(1,1);
-	  clicks[11]= new Loc(1,0);
-	  clicks[12]= new Loc(3,0);
-
-
-
-
-	  return clicks;
-  }
+//  private Loc[] guildWarsLight(){
+//	  Loc clicks[] = new Loc[13];
+//	  clicks[0]= new Loc(0,0);
+//	  clicks[1]= new Loc(0,1);
+//	  clicks[2]= new Loc(3,0);
+//	  clicks[3]= new Loc(3,2);
+//	  clicks[4]= new Loc(0,2);
+//	  clicks[5]= new Loc(0,3);
+//	  clicks[6]= new Loc(1,2);
+//	  clicks[7]= new Loc(2,0);
+//	  clicks[8]= new Loc(2,2);
+//	  clicks[9]= new Loc(2,1);
+//	  clicks[10]= new Loc(1,1);
+//	  clicks[11]= new Loc(1,0);
+//	  clicks[12]= new Loc(3,0);
+//
+//
+//
+//
+//	  return clicks;
+//  }
   private void auto(boolean leech) throws AWTException, InterruptedException{
 	  if(leech == false)
 	  {
 		
-		  dmg(guildWarsLight());
+		  dmg(smORC());
 
 	  }
 	  delay();
