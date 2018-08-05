@@ -1,8 +1,0 @@
-710 558
-Delayinmiliseconds: 1241
-662 679
-Delayinmiliseconds: 3316
-781 636
-Delayinmiliseconds: 1523
-939 687
-Delayinmiliseconds: 1427

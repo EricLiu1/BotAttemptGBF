@@ -436,6 +436,53 @@ private void delay(int x) throws InterruptedException{
 	}
 	
   }
+  private Loc[] water()
+  {
+	  Loc clicks[] = new Loc[10];
+	  clicks[0] = new Loc(0,0);
+	  clicks[1] = new Loc(0,1);
+	  clicks[2] = new Loc(0,2);
+	  clicks[3] = new Loc(0,3);
+	  clicks[4] = new Loc(1,0);
+	  clicks[5] = new Loc(1,1);
+	  clicks[6] = new Loc(1,2);
+	  clicks[7] = new Loc(2,0);
+	  clicks[8] = new Loc(2,1);
+	  clicks[9] = new Loc(2,2);
+
+
+	  return clicks;
+  }
+  private Loc[] fire()
+  {
+	  Loc clicks[] = new Loc[10];
+	  clicks[0] = new Loc(0,3);
+	  clicks[1] = new Loc(0,1);
+	  clicks[2] = new Loc(0,2);
+	  clicks[3] = new Loc(0,0);
+	  clicks[4] = new Loc(1,0);
+	 
+	  clicks[5] = new Loc(1,2);
+	  clicks[6] = new Loc(2,0);
+	  clicks[7] = new Loc(2,1);
+	
+	  clicks[8] = new Loc(3,0);
+	  clicks[9] = new Loc(3,1);
+
+
+	  return clicks;
+  }
+  
+  private Loc[] dirt()
+  {
+	  Loc clicks[] = new Loc[4];
+	  clicks[0] = new Loc(0,0);
+	  clicks[1] = new Loc(0,1);
+	  clicks[2] = new Loc(0,2);
+	  clicks[3] = new Loc(0,3);
+	  return clicks;
+  }
+  
   private Loc[] smORC()
   {	  
 	  Loc clicks[] = new Loc[8];
@@ -499,7 +546,7 @@ private void delay(int x) throws InterruptedException{
 	  if(leech == false)
 	  {
 		
-		  dmg(smORC());
+		  dmg(fire());
 
 	  }
 	  delay();
@@ -515,6 +562,7 @@ private void delay(int x) throws InterruptedException{
 	  else if ( mode == Mode.RAIDS)
 	  {
 //		  Thread.sleep(actionDelay + 50000);
+//		  Thread.sleep(actionDelay + 100000 );
 		  Thread.sleep(actionDelay + 125000 ); 
 	  }
 	  else{

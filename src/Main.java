@@ -25,17 +25,12 @@ import javafx.stage.Stage;
 public class Main extends Application implements EventHandler<ActionEvent> {
 
 
-    Button hardDailies;
-    Button events;
+
     Button raid;
-    Button repeat;
-    Button repeatEvent;
-    Button exit;
     Button mimic;
     Button customInput;
+    Button exit;
     TextField iterations;
-    TextField delayTransitions;
-    TextField delayClicks;
     Thread start;
 
     static TextArea output = new TextArea(); 
@@ -46,21 +41,15 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Granblue Bot GUI");
-        hardDailies = new Button("Hard Dailies");
-        events = new Button("Event");
+
         raid = new Button("Raids");
-        repeat = new Button("Repeat");
-        repeatEvent = new Button("Repeat Event");
-        exit = new Button("Exit");
         mimic = new Button("Mimic");
         customInput = new Button("Custom Input");
-        hardDailies.setPrefSize(100, 20);
-        events.setPrefSize(100, 20);
+        exit = new Button("Exit");
         raid.setPrefSize(100, 20);
-        repeat.setPrefSize(100, 20);
-        repeatEvent.setPrefSize(100, 20);
         mimic.setPrefSize(100,20);
         customInput.setPrefSize(100, 20);
+        exit.setPrefSize(100, 20);
         
         // Displays the boxes that take in user values
         BorderPane iterationHBox = new BorderPane();
@@ -72,17 +61,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         iterationHBox.setCenter(iterations);
         iterationHBox.setTop(HeaderLbl);
         
-        BorderPane delayTransitionsHBox = new BorderPane();
-        Label delayTransitionLbl = new Label("Delay between Transitions: \t");
-        delayTransitions = new TextField();
-        delayTransitionsHBox.setLeft(delayTransitionLbl);
-        delayTransitionsHBox.setCenter(delayTransitions);
         
-        BorderPane delayClicksHBox = new BorderPane();
-        Label delayClicksLbl = new Label("Delay between Clicks: \t");
-        delayClicks = new TextField();
-        delayClicksHBox.setLeft(delayClicksLbl);
-        delayClicksHBox.setCenter(delayClicks);
         
         // Output HBox
         BorderPane outputHBox = new BorderPane();
@@ -92,11 +71,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         
 
         // This class will handle the button events
-        hardDailies.setOnAction(this);
-        events.setOnAction(this);
         raid.setOnAction(this);
-        repeat.setOnAction(this);
-        repeatEvent.setOnAction(this);
         exit.setOnAction(this);
         mimic.setOnAction(this);
         customInput.setOnAction(  new EventHandler<ActionEvent>() {
@@ -117,12 +92,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         raids.setPadding(new Insets(15, 12, 15, 12));
         raids.setSpacing(10);
         raids.setStyle("-fx-background-color: #336699;");
-        raids.getChildren().addAll(hardDailies,events,raid,repeat,repeatEvent,mimic,customInput, exit );
+        raids.getChildren().addAll(raid,mimic,customInput, exit );
         
         BorderPane fields = new BorderPane();
         fields.setTop(iterationHBox);
-        fields.setCenter(delayTransitionsHBox);
-        fields.setBottom(delayClicksHBox);
         
         // Main BorderPane
         BorderPane root = new BorderPane();
@@ -161,23 +134,13 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     
 		try {
 			writer = new PrintWriter("bot_input.txt", "UTF-8");
-	        if (event.getSource() == hardDailies) 
-	            writer.println("mode=1");
-	        if (event.getSource() == events)
-	        	writer.println("mode=2");
+
 	        if (event.getSource() == raid) 
 	        	writer.println("mode=3");
-	        if (event.getSource() == repeat) 
-	        	writer.println("mode=4");
-	        if (event.getSource() == repeatEvent) 
-	        	writer.println("mode=5");
+
 	        try{
 	            int numberOfIterations = Integer.parseInt(iterations.getText());
 	            writer.println("iterations="+numberOfIterations);
-	            double delay = Double.parseDouble(delayClicks.getText())*1000;
-	            writer.println("clickDelay="+delay);
-	            double transitionDelay = Double.parseDouble(delayTransitions.getText())*1000;
-	            writer.println("delayNormal="+transitionDelay);
 	           
 	        }catch(NumberFormatException e){
 	        	write("Using Default Values because input was either not a number or blank");
@@ -235,9 +198,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             		
             while(numberOfIterations >0)
             {
-            	write(String.valueOf(numberOfIterations));
+//            	write("Iteration: "+String.valueOf(numberOfIterations));
             	CI.execute(file.getName());
             	numberOfIterations--;
+            	System.out.println("Iterations Left: " + numberOfIterations);
             }
 			
 		} catch (FileNotFoundException e) {

@@ -25,6 +25,8 @@ public class CustomInput {
 				int x = Integer.parseInt(coord[0]);
 				int y = Integer.parseInt(coord[1]);
 				clickExact(x,y);
+				System.out.println("Clicked "+ x+" "+y);
+//				Main.write("Clicked "+ x+" "+y);
 			}
 			catch(Exception e){
 				try {
@@ -54,7 +56,7 @@ public class CustomInput {
 		    int mx = (int) b.getX();
 		    int my = (int) b.getY();
 
-		    double t = rand.nextInt(250);
+		    double t = 200 + rand.nextInt(250);
 		    double n = 50;
 		    double dx = (x - mx) / n;
 		    double dy = (y - my) / n;
